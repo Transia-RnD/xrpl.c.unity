@@ -5,9 +5,10 @@
     "unity": "2021.3.7f1",
     "author": "Denis Angell",
     "description": "xrpl.c.unity",
+    "dependencies": {},
     "repository": {
         "type": "git",
         "url": "https://github.com/Transia-RnD/xrpl.c.unity",
-        "revision": "346"
+        "revision": "e0edd6fe6bb1077857e02312681ba1b77085a77f"
     }
 }
