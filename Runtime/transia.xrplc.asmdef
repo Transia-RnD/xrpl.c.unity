@@ -1,5 +1,5 @@
 {
-    "transia.xrplc",
+    "name": "co.transia.xrplc",
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -8,5 +8,5 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": []
 }
