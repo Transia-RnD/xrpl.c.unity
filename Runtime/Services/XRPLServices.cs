@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Swordfish;
-using IO.Swagger.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xrpl.Client.Requests.Transaction;
-using Xrpl.Client.Model.Transaction;
-using Xrpl.Client.Requests.Ledger;
-using Xrpl.Client.Model.Ledger;
+using Xrpl.Client.Models.Methods;
+using Xrpl.Client.Models.Transactions;
 using Xrpl.Client;
 using Xrpl.Wallet;
 using Ripple.Keypairs;
 using System.Threading.Tasks;
+using Xrpl.Unity;
 
 public class XrpService : MonoBehaviour
 {
@@ -25,21 +22,12 @@ public class XrpService : MonoBehaviour
         client.Connect();
     }
 
-    public Wallet CreateXrpWallet(string secret)
+    public TxSigner CreateXrpWallet(string secret)
     {
         Seed seed = Seed.FromPassPhrase("taco main silly string happened town dollar toon").SetEd25519();
         string signorAddress = seed.KeyPair().Id();
 
-        Wallet wallet = new Wallet(
-            walletId: "null",
-            active: true,
-            deleted: false,
-            createdTime: 0,
-            address: signorAddress,
-            name: "Gambit_Xrp_Wallet",
-            isHd: false,
-            isPrivate: false
-        );
+        
         string encryptedSeed = AESGCM.SimpleEncryptWithPassword(
             seed.ToString(),
             secret
@@ -48,9 +36,7 @@ public class XrpService : MonoBehaviour
             secret.ToString(),
             "123456654321"
         );
-        PlayerPrefs.SetString("seed", encryptedSeed);
-        PlayerPrefs.SetString("secret", encryptedSecret);
-        return wallet;
+        return TxSigner.FromSecret(seed.ToString());;
     }
     
     public SignedTx XrpSignTransaction(string destination, string amount)
