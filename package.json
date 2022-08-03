@@ -1,10 +1,10 @@
 {
-    "name": "co.transia.xrplc",
-    "displayName": "XRPL Unity SDK + Wallet Keystore",
+    "name": "com.unity.xrplc",
+    "displayName": "XRPL + Unity",
     "version": "0.0.1",
-    "unity": "2021.3.7f1",
+    "unity": "2021.3",
     "author": "Denis Angell",
-    "description": "xrpl.c.unity",
+    "description": "XRPL Unity SDK + Wallet Keystore",
     "dependencies": {},
     "repository": {
         "type": "git",

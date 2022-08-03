@@ -1,5 +1,5 @@
 {
-    "name": "co.transia.xrplc",
+    "name": "com.unity.xrplc.Runtime",
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
