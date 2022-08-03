@@ -1,0 +1,13 @@
+{
+    "name": "com.xrpl.c.unity",
+    "displayName": "XRPL Unity SDK + Wallet Keystore",
+    "version": "0.0.1",
+    "unity": "2021.3.7f1",
+    "author": "Denis Angell",
+    "description": "xrpl.c.unity",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Transia-RnD/xrpl.c.unity",
+        "revision": "346"
+    }
+}
