@@ -1,5 +1,5 @@
 {
-    "name": "com.xrpl.c.unity",
+    "name": "co.transia.xrplc",
     "displayName": "XRPL Unity SDK + Wallet Keystore",
     "version": "0.0.1",
     "unity": "2021.3.7f1",
