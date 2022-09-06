@@ -11,10 +11,7 @@ public class XRPLManager : ScriptableObject
 {
     
     public IRippleClient client;
-    private static string serverUrl = "wss://s.altnet.rippletest.net:51233";
-    // private static string serverUrl = "wss://xls20-sandbox.rippletest.net:51233";
-
-    // Start is called before the first frame update
+    private static string serverUrl = "wss://xls20-sandbox.rippletest.net:51233";
     public void InitializeChain()
     {
         client = new RippleClient(serverUrl);
