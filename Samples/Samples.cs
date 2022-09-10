@@ -4,24 +4,25 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
-using System.Diagnostics;
+// using System.Diagnostics;
 using Xrpl.Unity;
-using Xrpl.Wallet;
+using Xrpl.XrplWallet;
 using Ripple.Keypairs;
 using Xrpl.Client;
-using Xrpl.Client.Model.Account;
-using Xrpl.Client.Requests.Account;
-using Xrpl.Client.Model.Transaction;
 using Xrpl.Client.Models.Methods;
 using Xrpl.Client.Models.Transactions;
+using static Xrpl.XrplWallet.Wallet;
+using Xrpl.Client.Models.Common;
 
 
 public class SampleExample : MonoBehaviour
 {
     private static IRippleClient client;
-    private static TxSigner wallet;
-    private static string serverUrl = "wss://xls20-sandbox.rippletest.net:51233";
-    private static string classicAddress = "r";
+    private static Wallet wallet;
+    private static string serverUrl = "wss://hooks-testnet-v2.xrpl-labs.com";
+    private static string classicAddress = "radyYfJy6M4P58S3XTGYQr5tKYbnH74DEj";
+
+    private static string seed = "snYLsV8VWT7TKjT3cEifBQB3b1dPY";
 
     public void Awake()
     {
@@ -34,9 +35,7 @@ public class SampleExample : MonoBehaviour
     public void CreateXrpWallet()
     {
         // create a wallet on the testnet
-        Seed seed = Seed.FromPassPhrase("taco main silly string happened town dollar toon").SetEd25519();
-        string signorAddress = seed.KeyPair().Id();
-        wallet = TxSigner.FromSecret(seed.ToString());
+        wallet = Wallet.FromSeed(seed);
     }
 
     public void EncryptXrpWallet(string seed, string secret)
@@ -46,7 +45,7 @@ public class SampleExample : MonoBehaviour
             seed.ToString(),
             secret
         );
-        Debug.WriteLine(encryptedSeed);
+        Debug.Log(encryptedSeed);
     }
 
      public void DecryptXrpWallet(string seed, string secret)
@@ -56,27 +55,28 @@ public class SampleExample : MonoBehaviour
             seed.ToString(),
             secret
         );
-        Debug.WriteLine(encryptedSeed);
+        Debug.Log(encryptedSeed);
     }
 
     public async Task GetAccountInfo()
     {
         // look up account info
-        AccountInfo accountInfo = await client.AccountInfo(classicAddress);
+        AccountInfoRequest request = new AccountInfoRequest(classicAddress);
+        AccountInfo accountInfo = await client.AccountInfo(request);
         decimal currencyTotal = (decimal)accountInfo.AccountData.Balance.ValueAsXrp;
         client.Disconnect();
-        Debug.WriteLine(currencyTotal);
+        Debug.Log(currencyTotal);
     }
 
     public void XrplClient() {
-        IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
+        IRippleClient client = new RippleClient("wss://hooks-testnet-v2.xrpl-labs.com");
         client.Connect();
-        Debug.WriteLine(client);
+        Debug.Log(client);
     }
 
     public void XrplWallet() {
-        TxSigner signer = TxSigner.FromSecret(seed);
-        Debug.WriteLine(signer);
+        Wallet wallet = Wallet.FromSeed(seed);
+        Debug.Log(wallet);
         // pub_key: ED46949E414A3D6D758D347BAEC9340DC78F7397FEE893132AAF5D56E4D7DE77B0
         // priv_key: -HIDDEN-
         // classic_address: rG5ZvYsK5BPi9f1Nb8mhFGDTNMJhEhufn6
@@ -84,16 +84,14 @@ public class SampleExample : MonoBehaviour
 
     public void XrplKeypairs() 
     {
-        Seed seed = Seed.FromRandom();
-        KeyPair pair = seed.KeyPair();
-        string publicKey = pair.Id();
-        string privateKey = seed.ToString();
-        Debug.WriteLine("Here's the public key:");
-        Debug.WriteLine("Here's the public key:");
-        Debug.WriteLine(publicKey);
-        Debug.WriteLine("Here's the private key:");
-        Debug.WriteLine(privateKey);
-        Debug.WriteLine("Store this in a secure place!");
+        Wallet wallet = Wallet.Generate();
+        string publicKey = wallet.PublicKey;
+        string privateKey = wallet.PrivateKey;
+        Debug.Log("Here's the public key:");
+        Debug.Log(publicKey);
+        Debug.Log("Here's the private key:");
+        Debug.Log(privateKey);
+        Debug.Log("Store this in a secure place!");
         // Here's the public key:
         // ED3CC1BBD0952A60088E89FA502921895FC81FBD79CAE9109A8FE2D23659AD5D56
         // Here's the private key:
@@ -101,33 +99,54 @@ public class SampleExample : MonoBehaviour
         // Store this in a secure place!
     }
 
-    public void SerializeAndSign() 
+    public async void SerializeAndSign() 
     {
-        AccountInfo accountInfo = await client.AccountInfo("rwEHFU98CjH59UX2VqAgeCzRFU9KVvV71V");
+        AccountInfoRequest request = new AccountInfoRequest(classicAddress);
+        AccountInfo accountInfo = await client.AccountInfo(request);
 
         // prepare the transaction
         // the amount is expressed in drops, not XRP
         // see https://xrpl.org/basic-data-types.html#specifying-currency-amounts
-        IPaymentTransaction paymentTransaction = new PaymentTransaction();
-        paymentTransaction.Account = "rwEHFU98CjH59UX2VqAgeCzRFU9KVvV71V";
+        IPayment paymentTransaction = new Payment();
+        paymentTransaction.Account = classicAddress;
         paymentTransaction.Destination = "rEqtEHKbinqm18wQSQGstmqg9SFpUELasT";
         paymentTransaction.Amount = new Currency { ValueAsXrp = 1 };
         paymentTransaction.Sequence = accountInfo.AccountData.Sequence;
 
         // sign the transaction
-        TxSigner signer = TxSigner.FromSecret("xxxxxxx");  //secret is not sent to server, offline signing only
-        SignedTx signedTx = signer.SignJson(JObject.Parse(paymentTransaction.ToJson()));
+        Dictionary<string, dynamic> paymentJson = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(paymentTransaction.ToJson());
+        SignatureResult signedTx = wallet.Sign(paymentJson);
 
         // submit the transaction
-        SubmitBlobRequest request = new SubmitBlobRequest();
-        request.TransactionBlob = signedTx.TxBlob;
+        SubmitRequest request1 = new SubmitRequest();
+        request1.TxBlob = signedTx.TxBlob;
 
-        Submit result = await client.SubmitTransactionBlob(request);
+        Submit result = await client.Submit(request1);
     }
 
-    public void LedgerFee() {
-        Fee fee = await client.Fees();
-        Debug.WriteLine(fee);
+    public async void SubmitTx() 
+    {
+        AccountInfoRequest request = new AccountInfoRequest(classicAddress);
+        AccountInfo accountInfo = await client.AccountInfo(request);
+
+        // prepare the transaction
+        // the amount is expressed in drops, not XRP
+        // see https://xrpl.org/basic-data-types.html#specifying-currency-amounts
+        IPayment paymentTransaction = new Payment();
+        paymentTransaction.Account = classicAddress;
+        paymentTransaction.Destination = "rEqtEHKbinqm18wQSQGstmqg9SFpUELasT";
+        paymentTransaction.Amount = new Currency { ValueAsXrp = 1 };
+        paymentTransaction.Sequence = accountInfo.AccountData.Sequence;
+
+        // submit the transaction
+        Dictionary<string, dynamic> paymentJson = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(paymentTransaction.ToJson());
+        Submit result = await client.Submit(paymentJson, wallet);
+    }
+
+    public async void LedgerFee() {
+        FeeRequest feeRequest = new FeeRequest();
+        Fee fee = await client.Fee(feeRequest);
+        Debug.Log(fee);
         // 10
     }
 }

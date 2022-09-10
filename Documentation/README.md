@@ -1,68 +1,10 @@
 [![NuGet Badge](https://buildstats.info/nuget/xrpl.c)](https://www.nuget.org/packages/xrpl.c/)
 
-# xrpl.c
+# xrpl.c.unity
 
 * This library would not be possible without Chris Williams.
 
-A pure C# implementation for interacting with the XRP Ledger, the `xrpl.c` library simplifies the hardest parts of XRP Ledger interaction, like serialization and transaction signing, by providing native C# methods and models for [XRP Ledger transactions](https://xrpl.org/transaction-formats.html) and core server [API](https://xrpl.org/api-conventions.html) ([`rippled`](https://github.com/ripple/rippled)) objects.
-
-## Migration from RippleDotNet & ripple-netcore
-
-From RippleDotNet
-
-```
-using RippleDotNet;
-using RippleDotNet.Model.Account;
-using RippleDotNet.Requests.Account;
-```
-
-To xrpl.c
-
-```
-using Xrpl.Client;
-using Xrpl.Client.Model.Account;
-using Xrpl.Client.Requests.Account;
-```
-
-From Ripple.Core
-
-```
-using Ripple.Core.Types;
-```
-
-To xrpl.c
-
-```
-using Ripple.Binary.Codec.Types;
-```
-
-
-From Ripple.Signing
-
-```
-using Ripple.Signing;
-```
-
-To xrpl.c
-
-```
-using Xrpl.Wallet;
-```
-
-
-From Ripple.TxSigning
-
-```
-using Ripple.TxSigning;
-```
-
-To xrpl.c
-
-```
-using Ripple.Keypairs;
-```
-
-
+A pure C# implementation for interacting with the XRP Ledger, the `xrpl.c.unity` library simplifies the hardest parts of XRP Ledger interaction, like serialization and transaction signing, by providing native C# methods and models for [XRP Ledger transactions](https://xrpl.org/transaction-formats.html) and core server [API](https://xrpl.org/api-conventions.html) ([`rippled`](https://github.com/ripple/rippled)) objects.
 
 
 ```csharp
@@ -72,19 +14,21 @@ IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
 client.Connect();
 
 # create a wallet on the testnet
-using Xrpl.Wallet;
-using System.Diagnostics;
+using Xrpl.XrplWallet;
+using UnityEngine;
 // test_wallet = SOON
-Debug.WriteLine(testWallet);
+Debug.Log(testWallet);
 public_key: ED3CC1BBD0952A60088E89FA502921895FC81FBD79CAE9109A8FE2D23659AD5D56
 private_key: -HIDDEN-
 classic_address: rBtXmAdEYcno9LWRnAGfT9qBxCeDvuVRZo
 
 # look up account info
-using System.Diagnostics;
-using Xrpl.Client.Model.Account;
-AccountInfo accountInfo = await client.AccountInfo(account);
-Debug.WriteLine(accountInfo);
+using UnityEngine;
+using Xrpl.Client.Models.Methods;
+// ...
+AccountInfoRequest request = new AccountInfoRequest(account);
+AccountInfo accountInfo = await client.AccountInfo(request);
+Debug.Log(accountInfo);
 # {
 #     "Account": "rBtXmAdEYcno9LWRnAGfT9qBxCeDvuVRZo",
 #     "Balance": "1000000000",
@@ -144,6 +88,7 @@ Use the `Xrpl.Client` library to create a network client for connecting to the X
 
 ```csharp
 using Xrpl.Client;
+// ...
 IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
 client.Connect();
 ```
@@ -158,9 +103,10 @@ To create a wallet from a seed (in this case, the value generated using [`Xrpl.K
 
 ```csharp
 using Xrpl.Wallet;
-using System.Diagnostics;
-TxSigner signer = TxSigner.FromSecret(seed);
-Debug.WriteLine(signer);
+using UnityEngine;
+// ...
+Wallet wallet = Wallet.FromSeed(seed);
+Debug.Log(wallet);
 # pub_key: ED46949E414A3D6D758D347BAEC9340DC78F7397FEE893132AAF5D56E4D7DE77B0
 # priv_key: -HIDDEN-
 # classic_address: rG5ZvYsK5BPi9f1Nb8mhFGDTNMJhEhufn6
@@ -171,7 +117,7 @@ Debug.WriteLine(signer);
 ```csharp
 test_wallet = SOON
 test_account = test_wallet.classic_address
-Debug.WriteLine(test_account);
+Debug.Log(test_account);
 # Classic address: rEQB2hhp3rg7sHj6L8YyR4GG47Cb7pfcuw
 ``` -->
 
@@ -184,22 +130,21 @@ Here's an example of how to generate a `seed` value and derive an [XRP Ledger "c
 
 ```csharp
 using Ripple.Keypairs;
-using System.Diagnostics;
-Seed seed = Seed.FromRandom();
-KeyPair pair = seed.KeyPair();
-string public = pair.Id();
-string private = seed.ToString();
-Debug.WriteLine("Here's the public key:");
-print("Here's the public key:")
-Debug.WriteLine(public);
-Debug.WriteLine("Here's the private key:");
-Debug.WriteLine(private);
-Debug.WriteLine("Store this in a secure place!");
-# Here's the public key:
-# ED3CC1BBD0952A60088E89FA502921895FC81FBD79CAE9109A8FE2D23659AD5D56
-# Here's the private key:
-# EDE65EE7882847EF5345A43BFB8E6F5EEC60F45461696C384639B99B26AAA7A5CD
-# Store this in a secure place!
+using UnityEngine;
+// ...
+Wallet wallet = Wallet.Generate();
+string publicKey = wallet.PublicKey;
+string privateKey = wallet.PrivateKey;
+Debug.Log("Here's the public key:");
+Debug.Log(publicKey);
+Debug.Log("Here's the private key:");
+Debug.Log(privateKey);
+Debug.Log("Store this in a secure place!");
+// Here's the public key:
+// ED3CC1BBD0952A60088E89FA502921895FC81FBD79CAE9109A8FE2D23659AD5D56
+// Here's the private key:
+// EDE65EE7882847EF5345A43BFB8E6F5EEC60F45461696C384639B99B26AAA7A5CD
+// Store this in a secure place!
 ```
 
 **Note:** You can use `Ripple.Keypairs` to sign transactions but `xrpl.c` also provides explicit methods for safely signing and submitting transactions. See [Transaction Signing](#transaction-signing) and [XRPL Transaction Methods](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.transaction.html#module-xrpl.transaction) for more information.
@@ -223,27 +168,28 @@ Use the [`xrpl.transaction`](https://xrpl.c.readthedocs.io/en/stable/source/xrpl
 using Xrpl.Client.Model.Account;
 using Xrpl.Client.Requests.Account;
 using Xrpl.Client.Model.Transaction;
+// ...
+AccountInfoRequest request = new AccountInfoRequest(classicAddress);
+AccountInfo accountInfo = await client.AccountInfo(request);
 
-AccountInfo accountInfo = await client.AccountInfo("rwEHFU98CjH59UX2VqAgeCzRFU9KVvV71V");
-
-# prepare the transaction
-# the amount is expressed in drops, not XRP
-# see https://xrpl.org/basic-data-types.html#specifying-currency-amounts
-IPaymentTransaction paymentTransaction = new PaymentTransaction();
-paymentTransaction.Account = "rwEHFU98CjH59UX2VqAgeCzRFU9KVvV71V";
+// prepare the transaction
+// the amount is expressed in drops, not XRP
+// see https://xrpl.org/basic-data-types.html#specifying-currency-amounts
+IPayment paymentTransaction = new Payment();
+paymentTransaction.Account = classicAddress;
 paymentTransaction.Destination = "rEqtEHKbinqm18wQSQGstmqg9SFpUELasT";
 paymentTransaction.Amount = new Currency { ValueAsXrp = 1 };
 paymentTransaction.Sequence = accountInfo.AccountData.Sequence;
 
-# sign the transaction
-TxSigner signer = TxSigner.FromSecret("xxxxxxx");  //secret is not sent to server, offline signing only
-SignedTx signedTx = signer.SignJson(JObject.Parse(paymentTransaction.ToJson()));
+// sign the transaction
+Dictionary<string, dynamic> paymentJson = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(paymentTransaction.ToJson());
+SignatureResult signedTx = wallet.Sign(paymentJson);
 
-# submit the transaction
-SubmitBlobRequest request = new SubmitBlobRequest();
-request.TransactionBlob = signedTx.TxBlob;
+// submit the transaction
+SubmitRequest request1 = new SubmitRequest();
+request1.TxBlob = signedTx.TxBlob;
 
-Submit result = await client.SubmitTransactionBlob(request);
+Submit result = await client.Submit(request1);
 ```
 
 #### Get fee from the XRP Ledger
@@ -252,10 +198,11 @@ Submit result = await client.SubmitTransactionBlob(request);
 In most cases, you can specify the minimum [transaction cost](https://xrpl.org/transaction-cost.html#current-transaction-cost) of `"10"` for the `fee` field unless you have a strong reason not to. But if you want to get the [current load-balanced transaction cost](https://xrpl.org/transaction-cost.html#current-transaction-cost) from the network, you can use the `Fees` function:
 
 ```csharp
-using System.Diagnostics;
-Fee fee = await client.Fees();
-Debug.WriteLine(fee);
-# 10
+using UnityEngine;
+FeeRequest feeRequest = new FeeRequest();
+Fee fee = await client.Fee(feeRequest);
+Debug.Log(fee);
+// 10
 ```
 
 <!-- #### Auto-filled fields
@@ -339,7 +286,7 @@ testnet_xaddress = (
         is_test_network=True,
     )
 )
-Debug.WriteLine(testnet_xaddress);
+Debug.Log(testnet_xaddress);
 # T7QDemmxnuN7a52A62nx2fxGPWcRahLCf3qaswfrsNW9Lps
 ``` -->
 
