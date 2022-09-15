@@ -1,10 +1,6 @@
-[![NuGet Badge](https://buildstats.info/nuget/xrpl.c)](https://www.nuget.org/packages/xrpl.c/)
+# xrpl.csharp.unity
 
-# xrpl.c.unity
-
-* This library would not be possible without Chris Williams.
-
-A pure C# implementation for interacting with the XRP Ledger, the `xrpl.c.unity` library simplifies the hardest parts of XRP Ledger interaction, like serialization and transaction signing, by providing native C# methods and models for [XRP Ledger transactions](https://xrpl.org/transaction-formats.html) and core server [API](https://xrpl.org/api-conventions.html) ([`rippled`](https://github.com/ripple/rippled)) objects.
+A pure C# implementation for interacting with the XRP Ledger, the `xrpl.csharp.unity` library simplifies the hardest parts of XRP Ledger interaction, like serialization and transaction signing, by providing native C# methods and models for [XRP Ledger transactions](https://xrpl.org/transaction-formats.html) and core server [API](https://xrpl.org/api-conventions.html) ([`rippled`](https://github.com/ripple/rippled)) objects.
 
 
 ```csharp
@@ -16,7 +12,8 @@ client.Connect();
 # create a wallet on the testnet
 using Xrpl.XrplWallet;
 using UnityEngine;
-// test_wallet = SOON
+testWallet = Wallet.Generate();
+await WalletSugar.FundWallet(client, testWallet);
 Debug.Log(testWallet);
 public_key: ED3CC1BBD0952A60088E89FA502921895FC81FBD79CAE9109A8FE2D23659AD5D56
 private_key: -HIDDEN-
@@ -45,18 +42,29 @@ Debug.Log(accountInfo);
 <!-- [![Downloads](https://pepy.tech/badge/xrpl-py/month)](https://pepy.tech/project/xrpl-py/month)
 [![Contributors](https://img.shields.io/github/contributors/xpring-eng/xrpl-py.svg)](https://github.com/xpring-eng/xrpl-py/graphs/contributors) -->
 
-## Installation and supported versions
+## Installation
 
-The `xrpl.c` library is available on [DotNet](https://dotnet.microsoft.com/). Install with `dotnet`:
+There are a few ways to install the unity plugin.
 
+### Unity Assets (Custom Github Url)
 
+If you want to add the package though the asset store you can grab the [github url](https://github.com/Transia-RnD/xrpl.csharp.unity) and then paste it into the package manager in unity
+
+### Manifest Json File
+
+You can also add the package directly to your `manifest.json` file located under Packages/manifest.json.
+
+```json
+{
+    "dependencies": {
+        "com.unity.xrplc": "git+https://github.com/Transia-RnD/xrpl.csharp.unity",
+    }
+}
 ```
-dotnet add package xrpl.c --version 1.0.0
-```
 
-The library supports [Dotnet 5](https://dotnet.microsoft.com/) and later.
+For more indepth instructions on installing see <https://docs.unity3d.com/Packages/com.unity.package-manager-ui@2.0/manual/index.html>
 
-<!-- [![Supported Versions](https://img.shields.io/pypi/pyversions/xrpl.c.svg)](https://pypi.org/project/xrpl-py) -->
+[![NuGet Badge](https://buildstats.info/nuget/xrpl.c)](https://www.nuget.org/packages/xrpl.c/)
 
 
 ## Features
@@ -297,7 +305,7 @@ If you want to contribute to this project, see [CONTRIBUTING.md].
 
 ### Mailing Lists
 
-We have a low-traffic mailing list for announcements of new `xrpl.c` releases. (About 1 email per week)
+We have a low-traffic mailing list for announcements of new `xrpl.csharp` releases. (About 1 email per week)
 
 + [Subscribe to xrpl-announce](https://groups.google.com/g/xrpl-announce)
 
@@ -308,7 +316,7 @@ If you're using the XRP Ledger in production, you should run a [rippled server](
 
 ## License
 
-The `xrpl.c` library is licensed under the ISC License. See [LICENSE] for more information.
+The `xrpl.csharp` library is licensed under the ISC License. See [LICENSE] for more information.
 
 
 
@@ -322,3 +330,4 @@ The credit of this repository goes to Chris Williams.
 https://github.com/chriswill
 
 Thank you Chris.
+
