@@ -6,7 +6,7 @@ There are a few ways to install the unity plugin.
 
 ### Unity Assets (Custom Github Url)
 
-If you want to add the package though the asset store you can grab the [github url](https://github.com/Transia-RnD/xrpl.c.unity) and then paste it into the package manager in unity
+If you want to add the package though the asset store you can grab the [github url](https://github.com/Transia-RnD/xrpl.csharp.unity) and then paste it into the package manager in unity
 
 ### Manifest Json File
 
