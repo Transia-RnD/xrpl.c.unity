@@ -15,7 +15,7 @@ You can also add the package directly to your `manifest.json` file located under
 ```json
 {
     "dependencies": {
-        "com.unity.xrplc": "git+https://github.com/Transia-RnD/xrpl.c.unity",
+        "com.unity.xrplc": "git+https://github.com/Transia-RnD/xrpl.csharp.unity",
     }
 }
 ```
