@@ -1,6 +1,6 @@
 {
     "name": "com.unity.xrplc",
-    "displayName": "XRPL + Unity",
+    "displayName": "Xrpl Toolkit",
     "version": "0.9.9",
     "unity": "2021.3",
     "author": { 
@@ -8,7 +8,7 @@
         "email" : "dangell@transia.co",
         "url" : "https://transia.co/"
     },
-    "description": "XRPL Unity SDK + Wallet Keystore",
+    "description": "Xrpl Toolkit",
     "dependencies": {},
     "repository": {
         "type": "git",
