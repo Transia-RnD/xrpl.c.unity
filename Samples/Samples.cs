@@ -5,20 +5,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 // using System.Diagnostics;
-using Xrpl.Unity;
-using Xrpl.XrplWallet;
-using Ripple.Keypairs;
+using Xrpl.Wallet;
+using Xrpl.Keypairs;
 using Xrpl.Client;
-using Xrpl.Client.Models.Methods;
-using Xrpl.Client.Models.Transactions;
-using static Xrpl.XrplWallet.Wallet;
-using Xrpl.Client.Models.Common;
-
+using Xrpl.Models.Methods;
+using Xrpl.Models.Transaction;
+using Xrpl.Models.Common;
+using Xrpl.Unity.Keystore;
 
 public class SampleExample : MonoBehaviour
 {
-    private static IRippleClient client;
-    private static Wallet wallet;
+    private static IXrplClient client;
+    private static XrplWallet wallet;
     private static string serverUrl = "wss://hooks-testnet-v2.xrpl-labs.com";
     private static string classicAddress = "radyYfJy6M4P58S3XTGYQr5tKYbnH74DEj";
 
@@ -27,7 +25,7 @@ public class SampleExample : MonoBehaviour
     public void Awake()
     {
         // create a network client
-        client = new RippleClient(serverUrl);
+        client = new XrplClient(serverUrl);
         client.Connect();
         CreateXrpWallet();
     }
@@ -35,7 +33,7 @@ public class SampleExample : MonoBehaviour
     public void CreateXrpWallet()
     {
         // create a wallet on the testnet
-        wallet = Wallet.FromSeed(seed);
+        wallet = XrplWallet.FromSeed(seed);
     }
 
     public void EncryptXrpWallet(string seed, string secret)
@@ -68,23 +66,23 @@ public class SampleExample : MonoBehaviour
         Debug.Log(currencyTotal);
     }
 
-    public void XrplClient() {
-        IRippleClient client = new RippleClient("wss://hooks-testnet-v2.xrpl-labs.com");
+    public void TestXrplClient() {
+        IXrplClient client = new XrplClient("wss://hooks-testnet-v2.xrpl-labs.com");
         client.Connect();
         Debug.Log(client);
     }
 
-    public void XrplWallet() {
-        Wallet wallet = Wallet.FromSeed(seed);
+    public void TestXrplWallet() {
+        XrplWallet wallet = XrplWallet.FromSeed(seed);
         Debug.Log(wallet);
         // pub_key: ED46949E414A3D6D758D347BAEC9340DC78F7397FEE893132AAF5D56E4D7DE77B0
         // priv_key: -HIDDEN-
         // classic_address: rG5ZvYsK5BPi9f1Nb8mhFGDTNMJhEhufn6
     }
 
-    public void XrplKeypairs() 
+    public void TestXrplKeypairs() 
     {
-        Wallet wallet = Wallet.Generate();
+        XrplWallet wallet = XrplWallet.Generate();
         string publicKey = wallet.PublicKey;
         string privateKey = wallet.PrivateKey;
         Debug.Log("Here's the public key:");

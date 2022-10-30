@@ -5,14 +5,14 @@ A pure C# implementation for interacting with the XRP Ledger, the `xrpl.csharp.u
 
 ```csharp
 # create a network client
-using Xrpl.Client;
-IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
+using Xrpl;
+IXrplClient client = new XrplClient("wss://s.altnet.rippletest.net:51233");
 client.Connect();
 
 # create a wallet on the testnet
-using Xrpl.XrplWallet;
+using Xrpl.Wallet;
 using UnityEngine;
-testWallet = Wallet.Generate();
+XrplWallet testWallet = XrplWallet.Generate();
 await WalletSugar.FundWallet(client, testWallet);
 Debug.Log(testWallet);
 public_key: ED3CC1BBD0952A60088E89FA502921895FC81FBD79CAE9109A8FE2D23659AD5D56
@@ -21,7 +21,7 @@ classic_address: rBtXmAdEYcno9LWRnAGfT9qBxCeDvuVRZo
 
 # look up account info
 using UnityEngine;
-using Xrpl.Client.Models.Methods;
+using Xrpl.Models.Methods;
 // ...
 AccountInfoRequest request = new AccountInfoRequest(account);
 AccountInfo accountInfo = await client.AccountInfo(request);
@@ -95,10 +95,10 @@ The following sections describe some of the most commonly used modules in the `x
 Use the `Xrpl.Client` library to create a network client for connecting to the XRP Ledger.
 
 ```csharp
-using Xrpl.Client;
+using Xrpl;
 // ...
-IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
-client.Connect();
+IXrplClient client = new XrplClient("wss://s.altnet.rippletest.net:51233");
+await client.Connect();
 ```
 
 ### Manage keys and wallets
@@ -113,7 +113,7 @@ To create a wallet from a seed (in this case, the value generated using [`Xrpl.K
 using Xrpl.Wallet;
 using UnityEngine;
 // ...
-Wallet wallet = Wallet.FromSeed(seed);
+XrplWallet wallet = XrplWallet.FromSeed(seed);
 Debug.Log(wallet);
 # pub_key: ED46949E414A3D6D758D347BAEC9340DC78F7397FEE893132AAF5D56E4D7DE77B0
 # priv_key: -HIDDEN-
@@ -129,18 +129,18 @@ Debug.Log(test_account);
 # Classic address: rEQB2hhp3rg7sHj6L8YyR4GG47Cb7pfcuw
 ``` -->
 
-#### `Ripple.Keypairs`
+#### `Keypairs`
 
-Use the [`Ripple.Keypairs`](https://xrpl-c.readthedocs.io/en/stable/source/xrpl.core.keypairs.html#module-xrpl.core.keypairs) module to generate seeds and derive keypairs and addresses from those seed values.
+Use the [`Keypairs`](https://xrpl-c.readthedocs.io/en/stable/source/xrpl.core.keypairs.html#module-xrpl.core.keypairs) module to generate seeds and derive keypairs and addresses from those seed values.
 
 Here's an example of how to generate a `seed` value and derive an [XRP Ledger "classic" address](https://xrpl.org/cryptographic-keys.html#account-id-and-address) from that seed.
 
 
 ```csharp
-using Ripple.Keypairs;
+using Xrpl.KeypairsLib;
 using UnityEngine;
 // ...
-Wallet wallet = Wallet.Generate();
+XrplWallet wallet = XrplWallet.Generate();
 string publicKey = wallet.PublicKey;
 string privateKey = wallet.PrivateKey;
 Debug.Log("Here's the public key:");
@@ -155,7 +155,7 @@ Debug.Log("Store this in a secure place!");
 // Store this in a secure place!
 ```
 
-**Note:** You can use `Ripple.Keypairs` to sign transactions but `xrpl.c` also provides explicit methods for safely signing and submitting transactions. See [Transaction Signing](#transaction-signing) and [XRPL Transaction Methods](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.transaction.html#module-xrpl.transaction) for more information.
+**Note:** You can use `Keypairs` to sign transactions but `xrpl.c` also provides explicit methods for safely signing and submitting transactions. See [Transaction Signing](#transaction-signing) and [XRPL Transaction Methods](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.transaction.html#module-xrpl.transaction) for more information.
 
 
 ### Serialize and sign transactions
@@ -173,9 +173,9 @@ Use the [`xrpl.transaction`](https://xrpl.c.readthedocs.io/en/stable/source/xrpl
 
 
 ```csharp
-using Xrpl.Client.Model.Account;
-using Xrpl.Client.Requests.Account;
-using Xrpl.Client.Model.Transaction;
+using Xrpl.Model.Account;
+using Xrpl.Requests.Account;
+using Xrpl.Model.Transaction;
 // ...
 AccountInfoRequest request = new AccountInfoRequest(classicAddress);
 AccountInfo accountInfo = await client.AccountInfo(request);

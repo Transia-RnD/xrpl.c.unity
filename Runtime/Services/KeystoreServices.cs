@@ -15,7 +15,7 @@ using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
-namespace Xrpl.Unity
+namespace Xrpl.Unity.Keystore
 {
 
   public static class AESGCM

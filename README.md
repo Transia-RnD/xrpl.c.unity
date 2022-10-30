@@ -5,12 +5,12 @@ A pure C# implementation for interacting with the XRP Ledger, the `xrpl.csharp.u
 
 ```csharp
 # create a network client
-using Xrpl.Client;
-IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
+using Xrpl;
+IClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
 client.Connect();
 
 # create a wallet on the testnet
-using Xrpl.XrplWallet;
+using Xrpl.Wallet;
 using UnityEngine;
 testWallet = Wallet.Generate();
 await WalletSugar.FundWallet(client, testWallet);
@@ -21,7 +21,7 @@ classic_address: rBtXmAdEYcno9LWRnAGfT9qBxCeDvuVRZo
 
 # look up account info
 using UnityEngine;
-using Xrpl.Client.Models.Methods;
+using Xrpl.Models.Methods;
 // ...
 AccountInfoRequest request = new AccountInfoRequest(account);
 AccountInfo accountInfo = await client.AccountInfo(request);
@@ -69,13 +69,13 @@ For more indepth instructions on installing see <https://docs.unity3d.com/Packag
 
 ## Features
 
-Use `xrpl.c` to build C# applications that leverage the [XRP Ledger](https://xrpl.org/). The library helps with all aspects of interacting with the XRP Ledger, including:
+Use `xrpl.csharp` to build C# applications that leverage the [XRP Ledger](https://xrpl.org/). The library helps with all aspects of interacting with the XRP Ledger, including:
 
 * Key and wallet management
 * Serialization
 * Transaction Signing
 
-`xrpl.c` also provides:
+`xrpl.csharp` also provides:
 
 * A network client — See [`xrpl.clients`](https://xrpl-c.readthedocs.io/en/stable/source/xrpl.clients.html) for more information.
 * Methods for inspecting accounts — See [XRPL Account Methods](https://xrpl-c.readthedocs.io/en/stable/source/xrpl.account.html) for more information.
@@ -83,21 +83,21 @@ Use `xrpl.c` to build C# applications that leverage the [XRP Ledger](https://xrp
 
 ## [➡️ Reference Documentation](https://xrpl-c.readthedocs.io/en/stable/)
 
-See the complete [`xrpl.c` reference documentation on Read the Docs](https://xrpl-c.readthedocs.io/en/stable/index.html).
+See the complete [`xrpl.csharp` reference documentation on Read the Docs](https://xrpl-c.readthedocs.io/en/stable/index.html).
 
 
 ## Usage
 
-The following sections describe some of the most commonly used modules in the `xrpl.c` library and provide sample code.
+The following sections describe some of the most commonly used modules in the `xrpl.csharp` library and provide sample code.
 
 ### Network client
 
 Use the `Xrpl.Client` library to create a network client for connecting to the XRP Ledger.
 
 ```csharp
-using Xrpl.Client;
+using Xrpl;
 // ...
-IRippleClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
+IClient client = new RippleClient("wss://s.altnet.rippletest.net:51233");
 client.Connect();
 ```
 
@@ -129,15 +129,15 @@ Debug.Log(test_account);
 # Classic address: rEQB2hhp3rg7sHj6L8YyR4GG47Cb7pfcuw
 ``` -->
 
-#### `Ripple.Keypairs`
+#### `Keypairs`
 
-Use the [`Ripple.Keypairs`](https://xrpl-c.readthedocs.io/en/stable/source/xrpl.core.keypairs.html#module-xrpl.core.keypairs) module to generate seeds and derive keypairs and addresses from those seed values.
+Use the [`Keypairs`](https://xrpl-c.readthedocs.io/en/stable/source/xrpl.core.keypairs.html#module-xrpl.core.keypairs) module to generate seeds and derive keypairs and addresses from those seed values.
 
 Here's an example of how to generate a `seed` value and derive an [XRP Ledger "classic" address](https://xrpl.org/cryptographic-keys.html#account-id-and-address) from that seed.
 
 
 ```csharp
-using Ripple.Keypairs;
+using Xrpl.KeypairsLib;
 using UnityEngine;
 // ...
 Wallet wallet = Wallet.Generate();
@@ -155,12 +155,12 @@ Debug.Log("Store this in a secure place!");
 // Store this in a secure place!
 ```
 
-**Note:** You can use `Ripple.Keypairs` to sign transactions but `xrpl.c` also provides explicit methods for safely signing and submitting transactions. See [Transaction Signing](#transaction-signing) and [XRPL Transaction Methods](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.transaction.html#module-xrpl.transaction) for more information.
+**Note:** You can use `Keypairs` to sign transactions but `xrpl.csharp` also provides explicit methods for safely signing and submitting transactions. See [Transaction Signing](#transaction-signing) and [XRPL Transaction Methods](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.transaction.html#module-xrpl.transaction) for more information.
 
 
 ### Serialize and sign transactions
 
-To securely submit transactions to the XRP Ledger, you need to first serialize data from JSON and other formats into the [XRP Ledger's canonical format](https://xrpl.org/serialization.html), then to [authorize the transaction](https://xrpl.org/transaction-basics.html#authorizing-transactions) by digitally [signing it](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.core.keypairs.html?highlight=sign#xrpl.core.keypairs.sign) with the account's private key. The `xrpl.c` library provides several methods to simplify this process.
+To securely submit transactions to the XRP Ledger, you need to first serialize data from JSON and other formats into the [XRP Ledger's canonical format](https://xrpl.org/serialization.html), then to [authorize the transaction](https://xrpl.org/transaction-basics.html#authorizing-transactions) by digitally [signing it](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.core.keypairs.html?highlight=sign#xrpl.core.keypairs.sign) with the account's private key. The `xrpl.csharp` library provides several methods to simplify this process.
 
 
 Use the [`xrpl.transaction`](https://xrpl.c.readthedocs.io/en/stable/source/xrpl.transaction.html) module to sign and submit transactions. The module offers three ways to do this:
@@ -173,9 +173,9 @@ Use the [`xrpl.transaction`](https://xrpl.c.readthedocs.io/en/stable/source/xrpl
 
 
 ```csharp
-using Xrpl.Client.Model.Account;
-using Xrpl.Client.Requests.Account;
-using Xrpl.Client.Model.Transaction;
+using Xrpl.Model.Account;
+using Xrpl.Requests.Account;
+using Xrpl.Model.Transaction;
 // ...
 AccountInfoRequest request = new AccountInfoRequest(classicAddress);
 AccountInfo accountInfo = await client.AccountInfo(request);
@@ -215,7 +215,7 @@ Debug.Log(fee);
 
 <!-- #### Auto-filled fields
 
-The `xrpl.c` library automatically populates the `fee`, `sequence` and `last_ledger_sequence` fields when you create transactions. In the example above, you could omit those fields and let the library fill them in for you.
+The `xrpl.csharp` library automatically populates the `fee`, `sequence` and `last_ledger_sequence` fields when you create transactions. In the example above, you could omit those fields and let the library fill them in for you.
 
 ```csharp
 from xrpl.models.transactions import Payment
